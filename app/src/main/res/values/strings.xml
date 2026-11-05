@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lock Widget</string>
-    <string name="service_description">Allows Lock Widget to lock your device</string>
-    <string name="accessibility_service_enabled">Accessibility Service Enabled</string>
+    <string name="service_description">Instant 1-tap screen lock without Accessibility Services (100% Banking-App Safe)</string>
     <string name="lock">Lock</string>
-    <string name="toast_help">Please enable the Lock Widget accessibility service</string>
+    <string name="lock_screen_now">Lock Screen Now</string>
+    <string name="enable_screen_lock">Enable Screen Lock</string>
+    <string name="add_widget_home">Add Widget to Home Screen</string>
+    <string name="banking_safe_badge">Banking-Safe Mode • No Accessibility Used</string>
+    <string name="toast_help">Please tap Enable Screen Lock once to activate</string>
+    <string name="widget_pinned_toast">Lock shortcut added to Home Screen</string>
 </resources>

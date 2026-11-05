@@ -10,32 +10,36 @@ public class ShortcutActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String action = getIntent().getAction();
+        String action = getIntent() != null ? getIntent().getAction() : null;
         if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
             createShortcut();
-        } else if (LockService.ACTION_LOCK.equals(action)) {
+        } else {
             lockScreen();
         }
 
         finish();
     }
 
-    @SuppressWarnings("deprecation") // Use deprecated approach for no icon badge
+    @SuppressWarnings("deprecation")
     private void createShortcut() {
-        Intent intent = new Intent();
-        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(LockService.ACTION_LOCK, null, this, getClass()));
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.lock));
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher));
-        setResult(Activity.RESULT_OK, intent);
+        Intent shortcutIntent = new Intent(LockAdminReceiver.ACTION_LOCK, null, this, ShortcutActivity.class);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        resultIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.lock));
+        resultIntent.putExtra(
+                Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                Intent.ShortcutIconResource.fromContext(this, R.mipmap.ic_launcher)
+        );
+        setResult(Activity.RESULT_OK, resultIntent);
     }
 
     private void lockScreen() {
-        if (LockService.isEnabled(this)) {
-            Intent intent = new Intent(LockService.ACTION_LOCK, null, this, LockService.class);
-            startService(intent);
-        } else {
+        if (!LockAdminReceiver.lockScreen(this)) {
             Toast.makeText(this, getString(R.string.toast_help), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
     }

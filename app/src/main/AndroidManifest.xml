@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.github.shingyx.lockwidget">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.Material"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name=".MainActivity"
-            android:noHistory="true">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,23 +21,43 @@
 
         <activity
             android:name=".ShortcutActivity"
-            android:theme="@android:style/Theme.Material.Dialog">
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <action android:name="com.github.shingyx.lockwidget.LOCK" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".LockService"
+        <receiver
+            android:name=".LockAdminReceiver"
+            android:description="@string/service_description"
+            android:exported="true"
             android:label="@string/app_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_receiver" />
             <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".LockWidgetProvider"
+            android:exported="true"
+            android:label="@string/lock">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/service_config" />
-        </service>
+                android:name="android.appwidget.provider"
+                android:resource="@xml/lock_widget_info" />
+        </receiver>
 
     </application>
 
